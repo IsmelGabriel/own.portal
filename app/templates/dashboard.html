@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-header">
+    <div>
+        <h1 style="margin:0;">Hola, {{ user.name }}</h1>
+        <p style="color: var(--text-muted); margin-top: 5px;">Has iniciado sesión como <strong>{{ role|capitalize
+                }}</strong></p>
+    </div>
+    {% if role == 'admin' %}
+    <button class="btn btn-primary" style="width: auto;">+ Nuevo Usuario</button>
+    {% endif %}
+</div>
+
+<div class="dashboard-cards">
+    <div class="card glass-panel">
+        <h3>Tu Perfil</h3>
+        <p><strong>Documento:</strong> {{ user.document_number }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Teléfono:</strong> {{ user.phone }}</p>
+    </div>
+
+    <div class="card glass-panel">
+        <h3>Estado del Sistema</h3>
+        <p>Todos los servicios operando normalmente.</p>
+        <div style="margin-top: 1rem; color: var(--success-color); font-weight: 600;">
+            ● Conectado a PostgreSQL
+        </div>
+    </div>
+
+    {% if role == 'admin' %}
+    <div class="card glass-panel" style="border-color: rgba(108, 92, 231, 0.4);">
+        <h3>Panel de Administración</h3>
+        <p>Como administrador tienes acceso exclusivo para crear y gestionar otros usuarios del portal.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZIO Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    {% if request.path != '/login' %}
+    <nav class="navbar glass-panel">
+        <a href="{{ url_for('frontend.dashboard') }}" class="navbar-brand">ZIO Portal</a>
+        <div class="nav-links">
+            <a href="{{ url_for('frontend.dashboard') }}">Panel</a>
+            <a href="{{ url_for('frontend.logout') }}">Cerrar Sesión</a>
+        </div>
+    </nav>
+    {% endif %}
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script>
+        // Función global para mostrar errores
+        function showError(message) {
+            const container = document.getElementById('error-container');
+            if (container) {
+                container.innerHTML = `<div class="alert">${message}</div>`;
+            }
+        }
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>
