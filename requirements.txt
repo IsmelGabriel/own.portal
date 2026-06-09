@@ -5,3 +5,4 @@ Flask-JWT-Extended==4.5.3
 psycopg2-binary==2.9.9
 python-dotenv==1.0.0
 bcrypt==4.1.2
+gunicorn==21.2.0

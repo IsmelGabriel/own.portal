@@ -1,9 +1,15 @@
 from flask import Flask
-from app.config import DevelopmentConfig
+from app.config import DevelopmentConfig, ProductionConfig
 from app.extensions import db, migrate, jwt
+import os
 
-def create_app(config_class=DevelopmentConfig):
+def create_app(config_class=None):
     """Factory to create and configure the Flask app."""
+    if config_class is None:
+        if os.getenv('FLASK_ENV') == 'production':
+            config_class = ProductionConfig
+        else:
+            config_class = DevelopmentConfig
     app = Flask(__name__)
     app.config.from_object(config_class)
 
