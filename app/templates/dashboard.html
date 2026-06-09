@@ -8,7 +8,8 @@
                 }}</strong></p>
     </div>
     {% if role == 'admin' %}
-    <button class="btn btn-primary" style="width: auto;">+ Nuevo Usuario</button>
+    <a href="{{ url_for('frontend.create_user_view') }}" class="btn btn-primary" style="width: auto;">+ Nuevo
+        Usuario</a>
     {% endif %}
 </div>
 
