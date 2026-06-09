@@ -14,4 +14,4 @@ RUN apt-get update \
 
 COPY . .
 
-CMD ["flask", "run", "--host=0.0.0.0"]
+CMD sh -c "python manage.py seed_db && gunicorn -b 0.0.0.0:5000 'app:create_app()'"
