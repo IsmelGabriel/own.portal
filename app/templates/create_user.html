@@ -52,41 +52,65 @@
         </form>
     </div>
 </div>
+
+<dialog id="responseModal" class="custom-modal glass-panel">
+    <div class="modal-content" id="modalContent">
+        <h3 id="modalTitle">Título</h3>
+        <p id="modalMessage">Mensaje</p>
+        <button type="button" class="btn btn-primary"
+            onclick="document.getElementById('responseModal').close()">Aceptar</button>
+    </div>
+</dialog>
 {% endblock %}
 
 {% block scripts %}
 <script>
+    function showModal(title, message, type) {
+        const modal = document.getElementById('responseModal');
+        const modalContent = document.getElementById('modalContent');
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalMessage').textContent = message;
+
+        modalContent.className = 'modal-content ' + (type === 'success' ? 'modal-success' : 'modal-error');
+        modal.showModal();
+    }
+
     document.getElementById('createUserForm').addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // Reset messages
-        document.getElementById('error-container').innerHTML = '';
-        const successContainer = document.getElementById('success-container');
-        successContainer.innerHTML = '';
+        const form = e.target;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.textContent;
 
-        const formData = new FormData(e.target);
+        // Bloquear botón y mostrar carga
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Procesando...';
+
+        const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
 
         try {
             const response = await fetch('/api/users/', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    // Authorization Bearer token is not strictly needed in JS fetch
-                    // because flask-jwt-extended will automatically read it from the cookie!
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(data)
             });
 
             if (response.ok) {
-                successContainer.innerHTML = `<div class="alert" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3); color: var(--success-color);">Usuario creado exitosamente</div>`;
-                e.target.reset(); // Limpiar formulario
+                showModal('¡Éxito!', 'Usuario creado exitosamente', 'success');
+                form.reset(); // Limpiar formulario
             } else {
                 const error = await response.json();
-                showError(error.msg || 'Error al crear usuario');
+                showModal('Error', error.msg || 'Error al crear usuario', 'error');
             }
         } catch (err) {
-            showError('Error de conexión con el servidor.');
+            showModal('Error', 'Error de conexión con el servidor.', 'error');
+        } finally {
+            // Restaurar estado original del botón
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
         }
     });
 </script>

@@ -196,3 +196,43 @@ body {
   color: var(--error-color);
   text-align: center;
 }
+
+/* Custom Modal */
+dialog.custom-modal {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-color);
+  max-width: 400px;
+  width: 90%;
+  border-radius: 16px;
+  outline: none;
+}
+
+dialog.custom-modal::backdrop {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  padding: 2rem;
+  text-align: center;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.modal-content p {
+  margin-bottom: 1.5rem;
+  color: var(--text-muted);
+}
+
+.modal-success h3 {
+  color: var(--success-color);
+}
+
+.modal-error h3 {
+  color: var(--error-color);
+}

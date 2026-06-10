@@ -29,7 +29,15 @@
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const formData = new FormData(e.target);
+        const form = e.target;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.textContent;
+
+        // Mostrar estado de carga y bloquear el botón
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Procesando...';
+
+        const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
 
         try {
@@ -44,12 +52,21 @@
             if (response.ok) {
                 // El backend ya estableció la cookie JWT
                 window.location.href = '/dashboard';
+                // No habilitamos el botón aquí para evitar acciones mientras se redirige
             } else {
                 const error = await response.json();
                 showError(error.msg || 'Credenciales inválidas');
+
+                // Restaurar estado original del botón
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
             }
         } catch (err) {
             showError('Error de conexión con el servidor.');
+
+            // Restaurar estado original del botón
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
         }
     });
 </script>
