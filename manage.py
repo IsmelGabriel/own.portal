@@ -5,6 +5,7 @@ from app import create_app
 from app.extensions import db
 from app.models.role import Role
 from app.models.user import User
+from app.models.status import Status
 
 app = create_app()
 cli = FlaskGroup(create_app=create_app)
@@ -24,6 +25,16 @@ def seed_db():
     if not guest_role:
         guest_role = Role(name='invitado', description='Guest user')
         db.session.add(guest_role)
+
+    is_active = Status.query.filter_by(status=True).first()
+    if not is_active:
+        is_active = Status(status=True)
+        db.session.add(is_active)
+
+    is_inactive = Status.query.filter_by(status=False).first()
+    if not is_inactive:
+        is_inactive = Status(status=False)
+        db.session.add(is_inactive)
 
     db.session.commit()
 

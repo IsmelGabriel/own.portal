@@ -29,6 +29,7 @@ def create_user(name, document_number, email, phone, role_name, password):
         email=email,
         phone=phone,
         role_id=role.id,
+        status_id=1,
         password_hash=hashed_pw.decode('utf-8')
     )
 

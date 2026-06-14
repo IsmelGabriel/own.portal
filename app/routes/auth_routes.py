@@ -24,6 +24,9 @@ def login():
     )
 
     if result:
+        if "error" in result:
+            return jsonify({"msg": result["error"]}), 403
+
         response = jsonify({"msg": "Login successful", "role": result["role"]})
         set_access_cookies(response, result["access_token"])
         return response, 200
