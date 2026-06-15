@@ -1,5 +1,5 @@
 import bcrypt
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask_jwt_extended import create_access_token
 from app.extensions import db
 from app.models import User
@@ -25,7 +25,8 @@ def authenticate_user(document_number, password):
         additional_claims = {"role": user.role.name}
         access_token = create_access_token(
             identity=str(user.id),
-            additional_claims=additional_claims
+            additional_claims=additional_claims,
+            expires_delta=timedelta(hours=8)
         )
         return {"access_token": access_token, "role": user.role.name}
     return None

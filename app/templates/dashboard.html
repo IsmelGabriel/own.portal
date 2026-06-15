@@ -8,8 +8,7 @@
                 }}</strong></p>
     </div>
     {% if role == 'admin' %}
-    <a href="{{ url_for('frontend.create_user_view') }}" class="btn btn-primary" style="width: auto;">+ Nuevo
-        Usuario</a>
+    <a href="{{ url_for('frontend.list_users_view') }}" class="btn btn-primary" style="width: auto;">Usuarios</a>
     {% endif %}
 </div>
 

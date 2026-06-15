@@ -49,3 +49,13 @@ def user_profile(user_id):
     if str(user_id) != str(current_user_id) and claims.get('role') != 'admin':
         return jsonify({"msg": f"Access forbidden"}), 403
     return render_template('user_profile.html', user=user)
+
+@frontend_bp.route('/users')
+@jwt_required()
+@require_role('admin')
+def list_users_view():
+    users = User.query.all()
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    claims = get_jwt()
+    return render_template('list_users.html', users=users, user=user)

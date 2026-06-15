@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="table-container">
+    <div class="table-header">
+        <h2>Usuarios {{ users|length }}</h2>
+        <div class="table-filters">
+            <input type="text" id="searchInput" class="filter-input" placeholder="Buscar por nombre o doc...">
+            <select id="roleFilter" class="filter-select">
+                <option value="">Todos los roles/estados</option>
+                <option value="admin">Admin</option>
+                <option value="invitado">Invitado</option>
+                <option value="activo">Activo</option>
+                <option value="inactivo">Inactivo</option>
+            </select>
+        </div>
+        <a href="{{ url_for('frontend.create_user_view') }}" class="btn btn-primary"
+            style="width: auto; padding: 0.6rem 1rem;">+ Nuevo</a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Documento</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Activo</th>
+                <th>Último Acceso</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.name }}</td>
+                <td>{{ user.document_number }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.role.name }}</td>
+                <td>
+                    {% if user.status_id == 1 %}
+                    <span class="status-badge status-active">Activo</span>
+                    {% elif user.status_id == 2 %}
+                    <span class="status-badge status-inactive">Inactivo</span>
+                    {% else %}
+                    <span class="status-badge status-pending">Desconocido</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if user.last_session %}
+                    {{ user.last_session.strftime('%Y-%m-%d %H:%M') }}
+                    {% else %}
+                    Nunca
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('frontend.user_profile', user_id=user.id) }}" class="action-link">Ver</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('searchInput');
+        const roleFilter = document.getElementById('roleFilter');
+        const tableRows = document.querySelectorAll('.table-container tbody tr');
+
+        function filterTable() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filterValue = roleFilter.value.toLowerCase();
+
+            tableRows.forEach(row => {
+                const name = row.cells[0].textContent.toLowerCase();
+                const doc = row.cells[1].textContent.toLowerCase();
+                const role = row.cells[3].textContent.toLowerCase();
+                const status = row.cells[4].textContent.toLowerCase().trim();
+
+                const matchesSearch = name.includes(searchTerm) || doc.includes(searchTerm);
+                const matchesFilter = filterValue === "" || role.includes(filterValue) || status.includes(filterValue);
+
+                if (matchesSearch && matchesFilter) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        searchInput.addEventListener('input', filterTable);
+        roleFilter.addEventListener('change', filterTable);
+    });
+</script>
+{% endblock %}
