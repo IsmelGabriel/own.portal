@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify, make_response
 from flask_jwt_extended import set_access_cookies
 from app.services.auth_service import authenticate_user
+from app.schemas.auth_schema import LoginSchema
+from marshmallow import ValidationError
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -15,12 +17,19 @@ def login():
     else:
         data = request.form
 
-    if not data or not data.get('document_number') or not data.get('password'):
-        return jsonify({"msg": "Missing document_number or password"}), 400
+    # Fallback to empty dict if neither is available
+    if not data:
+        data = {}
+
+    schema = LoginSchema()
+    try:
+        validated_data = schema.load(data)
+    except ValidationError as err:
+        return jsonify({"msg": "Validation error", "errors": err.messages}), 400
 
     result = authenticate_user(
-        document_number=data.get('document_number'),
-        password=data.get('password')
+        document_number=validated_data['document_number'],
+        password=validated_data['password']
     )
 
     if result:

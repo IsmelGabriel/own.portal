@@ -19,7 +19,7 @@ def authenticate_user(document_number, password):
         user.password_hash.encode('utf-8')
     ):
         user.last_session = user.current_session
-        user.current_session = datetime.now()
+        user.current_session = datetime.utcnow()
         db.session.commit()
 
         additional_claims = {"role": user.role.name}

@@ -2,6 +2,8 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
 from app.services.user_service import create_user
 from app.utils.decorators import require_role
+from app.schemas.user_schema import UserRegistrationSchema
+from marshmallow import ValidationError
 
 user_bp = Blueprint('user', __name__)
 
@@ -15,23 +17,20 @@ def register_user():
     """
     data = request.get_json()
 
-    required_fields = [
-        'name', 'document_number', 'email',
-        'phone', 'role_name', 'password'
-    ]
-
-    for field in required_fields:
-        if field not in data:
-            return jsonify({"msg": f"Missing required field: {field}"}), 400
+    schema = UserRegistrationSchema()
+    try:
+        validated_data = schema.load(data)
+    except ValidationError as err:
+        return jsonify({"msg": "Validation error", "errors": err.messages}), 400
 
     try:
         new_user = create_user(
-            name=data['name'],
-            document_number=data['document_number'],
-            email=data['email'],
-            phone=data['phone'],
-            role_name=data['role_name'],
-            password=data['password']
+            name=validated_data['name'],
+            document_number=validated_data['document_number'],
+            email=validated_data['email'],
+            phone=validated_data['phone'],
+            role_name=validated_data['role_name'],
+            password=validated_data['password']
         )
         return jsonify({
             "msg": "User created successfully",

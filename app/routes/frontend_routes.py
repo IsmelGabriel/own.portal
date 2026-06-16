@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, make_response, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt, unset_jwt_cookies
-from app.models.user import User
-from app.models.role import Role
+from app.services.user_service import get_user_by_id, get_all_users
+from app.services.role_service import get_all_roles
 from app.utils.decorators import require_role
 
 frontend_bp = Blueprint('frontend', __name__)
@@ -18,7 +18,7 @@ def login():
 @jwt_required()
 def dashboard():
     user_id = get_jwt_identity()
-    user = User.query.get(user_id)
+    user = get_user_by_id(user_id)
     claims = get_jwt()
     return render_template('dashboard.html', user=user, role=claims.get('role'))
 
@@ -32,16 +32,16 @@ def logout():
 @jwt_required()
 @require_role('admin')
 def create_user_view():
-    roles = Role.query.all()
+    roles = get_all_roles()
     user_id = get_jwt_identity()
-    user = User.query.get(user_id)
+    user = get_user_by_id(user_id)
     claims = get_jwt()
     return render_template('create_user.html', roles=roles, user=user)
 
 @frontend_bp.route('/users/profile/<int:user_id>')
 @jwt_required()
 def user_profile(user_id):
-    user = User.query.get(user_id)
+    user = get_user_by_id(user_id)
     current_user_id = get_jwt_identity()
     claims = get_jwt()
     if not user:
@@ -54,8 +54,8 @@ def user_profile(user_id):
 @jwt_required()
 @require_role('admin')
 def list_users_view():
-    users = User.query.all()
+    users = get_all_users()
     user_id = get_jwt_identity()
-    user = User.query.get(user_id)
+    user = get_user_by_id(user_id)
     claims = get_jwt()
     return render_template('list_users.html', users=users, user=user)
