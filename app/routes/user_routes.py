@@ -4,6 +4,9 @@ from app.services.user_service import create_user
 from app.utils.decorators import require_role
 from app.schemas.user_schema import UserRegistrationSchema
 from marshmallow import ValidationError
+import logging
+
+logger = logging.getLogger(__name__)
 
 user_bp = Blueprint('user', __name__)
 
@@ -21,6 +24,7 @@ def register_user():
     try:
         validated_data = schema.load(data)
     except ValidationError as err:
+        logger.warning(f"User registration validation error: {err.messages}")
         return jsonify({"msg": "Validation error", "errors": err.messages}), 400
 
     try:
@@ -37,6 +41,8 @@ def register_user():
             "user_id": new_user.id
         }), 201
     except ValueError as e:
+        logger.warning(f"User registration failed: {str(e)}")
         return jsonify({"msg": str(e)}), 400
     except Exception as e:
+        logger.error(f"Internal server error during user registration: {str(e)}", exc_info=True)
         return jsonify({"msg": "Internal server error"}), 500

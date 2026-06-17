@@ -3,6 +3,9 @@ from app.extensions import db
 from app.models.user import User
 from app.models.role import Role
 from app.models.status import Status
+import logging
+
+logger = logging.getLogger(__name__)
 
 def create_user(name, document_number, email, phone, role_name, password):
     """
@@ -11,9 +14,11 @@ def create_user(name, document_number, email, phone, role_name, password):
     """
     # Check if user already exists
     if User.query.filter_by(document_number=document_number).first():
+        logger.warning(f"Attempt to create user with existing document number: {document_number}")
         raise ValueError("User with this document number already exists.")
 
     if User.query.filter_by(email=email).first():
+        logger.warning(f"Attempt to create user with existing email: {email}")
         raise ValueError("User with this email already exists.")
 
     role = Role.query.filter_by(name=role_name).first()
@@ -40,6 +45,7 @@ def create_user(name, document_number, email, phone, role_name, password):
 
     db.session.add(new_user)
     db.session.commit()
+    logger.info(f"Successfully created new user: {name} ({email}) with role: {role_name}")
     return new_user
 
 def get_user_by_id(user_id):

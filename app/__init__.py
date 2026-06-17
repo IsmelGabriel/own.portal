@@ -13,6 +13,10 @@ def create_app(config_class=None):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
+    # Initialize logger
+    from app.utils.logger import setup_logger
+    setup_logger(app)
+
     # Initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)
