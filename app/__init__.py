@@ -27,9 +27,11 @@ def create_app(config_class=None):
     from app.routes.auth_routes import auth_bp
     from app.routes.user_routes import user_bp
     from app.routes.frontend_routes import frontend_bp
+    from app.routes.skill_routes import skill_bp
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(user_bp, url_prefix='/api/users')
+    app.register_blueprint(skill_bp, url_prefix='/api/skills')
     app.register_blueprint(frontend_bp)
 
     from flask import redirect, url_for

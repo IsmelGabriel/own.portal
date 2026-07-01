@@ -18,7 +18,8 @@
                 <input type="password" id="password" name="password" required placeholder="••••••••">
             </div>
 
-            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+            <button type="submit" class="btn btn-primary" style="margin-bottom: 1rem;">Iniciar Sesión</button>
+            <a href="{{ url_for('frontend.index') }}" class="btn" style="border: 1px solid var(--border-color); color: var(--text-color);">Continuar como Invitado</a>
         </form>
     </div>
 </div>

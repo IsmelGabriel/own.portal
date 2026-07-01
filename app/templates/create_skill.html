@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-header">
+    <div>
+        <h1 style="margin:0;">Añadir Habilidad</h1>
+        <p style="color: var(--text-muted); margin-top: 5px;">Agrega una nueva habilidad a tu portafolio</p>
+    </div>
+    <a href="{{ url_for('frontend.dashboard') }}" class="btn btn-outline" style="width: auto; border: 1px solid var(--border-color); color: var(--text-color);">Volver al Panel</a>
+</div>
+
+<div class="center-container" style="min-height: auto;">
+    <div class="auth-form glass-panel" style="max-width: 500px;">
+        <div id="error-container"></div>
+        <div id="success-container"></div>
+
+        <form id="skillForm">
+            <div class="input-group">
+                <label for="name">Nombre de la Habilidad (Ej: Python)</label>
+                <input type="text" id="name" name="name" required placeholder="Python">
+            </div>
+
+            <div class="input-group">
+                <label for="icon_class">Clase del Ícono (Opcional, Ej: fa-brands fa-python)</label>
+                <input type="text" id="icon_class" name="icon_class" placeholder="fa-brands fa-python">
+            </div>
+
+            <div class="input-group">
+                <label for="description">Descripción</label>
+                <textarea id="description" name="description" rows="4" style="width: 100%; padding: 0.75rem 1rem; background: var(--surface-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-size: 0.95rem; font-family: inherit; resize: vertical;" placeholder="Construcción de APIs RESTful..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Guardar Habilidad</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('skillForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const form = e.target;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.textContent;
+        const errorContainer = document.getElementById('error-container');
+        const successContainer = document.getElementById('success-container');
+
+        errorContainer.innerHTML = '';
+        successContainer.innerHTML = '';
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Guardando...';
+
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+            const response = await fetch('/api/skills', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                successContainer.innerHTML = '<div class="alert" style="background: #d1fae5; border-color: #34d399; color: #065f46;">Habilidad guardada correctamente</div>';
+                form.reset();
+            } else {
+                const error = await response.json();
+                showError(error.msg || 'Error al guardar la habilidad');
+            }
+        } catch (err) {
+            showError('Error de conexión con el servidor.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+        }
+    });
+</script>
+{% endblock %}

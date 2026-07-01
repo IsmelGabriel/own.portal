@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="portfolio-container light-theme">
+    <nav class="portfolio-nav glass-morphism">
+        <div class="nav-brand">own.portal</div>
+        <div class="nav-links">
+            <a href="#about">About Me</a>
+            <a href="#skills">Skills</a>
+            <a href="#projects">Projects</a>
+            <a href="{{ url_for('frontend.login') }}" class="admin-link">Admin</a>
+        </div>
+    </nav>
+
+    <header class="hero-section" id="about">
+        <div class="hero-content glass-morphism">
+            <div class="hero-text">
+                <p class="greeting">Hello, I'm</p>
+                <h1 class="name">Ismel</h1>
+                <h2 class="title">Software Developer</h2>
+                <p class="bio">
+                    Welcome to my personal portal. I build robust and scalable web applications,
+                    always eager to learn and adopt new technologies. Check out my projects below!
+                </p>
+                <div class="hero-actions">
+                    <a href="#projects" class="btn btn-primary">View Work</a>
+                    <a href="https://github.com/IsmelGabriel" target="_blank" class="btn btn-outline">GitHub</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="image-placeholder glass-morphism">
+                    <span>IG</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="skills-section" id="skills">
+        <h2 class="section-title">My Skills</h2>
+        <div class="skills-grid">
+            {% if skills %}
+                {% for skill in skills %}
+                <div class="skill-card glass-morphism">
+                    <div class="skill-icon">
+                        {% if skill.icon_class %}
+                            <i class="{{ skill.icon_class }}"></i>
+                        {% else %}
+                            <span>•</span>
+                        {% endif %}
+                    </div>
+                    <div class="skill-info">
+                        <h3>{{ skill.name }}</h3>
+                        <p class="skill-desc">{{ skill.description }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="skill-card glass-morphism">
+                    <div class="skill-info">
+                        <i class="fab fa-python"></i>
+                        <h3>Python</h3>
+                        <p class="skill-desc">Built RESTful APIs, web scraping scripts, and data processing pipelines.</p>
+                    </div>
+                </div>
+                <div class="skill-card glass-morphism">
+                    <div class="skill-info">
+                        <i class="fab fa-docker"></i>
+                        <h3>Docker</h3>
+                        <p class="skill-desc">Containerized applications, managed microservices, and wrote Dockerfiles.</p>
+                    </div>
+                </div>
+                <div class="skill-card glass-morphism">
+                    <div class="skill-info">
+                        <i class="fas fa-database"></i>
+                        <h3>PostgreSQL</h3>
+                        <p class="skill-desc">Designed complex schemas, optimized queries, and managed database migrations.</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="projects-section" id="projects">
+        <h2 class="section-title">Featured Projects</h2>
+        <div class="projects-grid">
+            {% if projects %}
+                {% for project in projects %}
+                <div class="project-card glass-morphism">
+                    {% if project.image_url %}
+                    <div class="project-image" style="background-image: url('{{ project.image_url }}');"></div>
+                    {% else %}
+                    <div class="project-image placeholder-img"></div>
+                    {% endif %}
+                    <div class="project-content">
+                        <h3>{{ project.title }}</h3>
+                        <p>{{ project.description }}</p>
+                        <div class="project-tech">
+                            {% if project.technologies %}
+                                {% for tech in project.technologies.split(',') %}
+                                <span class="tech-tag">{{ tech.strip() }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="project-links">
+                            {% if project.repo_url %}
+                            <a href="{{ project.repo_url }}" target="_blank" class="project-link">Code</a>
+                            {% endif %}
+                            {% if project.live_url %}
+                            <a href="{{ project.live_url }}" target="_blank" class="project-link primary">Live</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="no-projects">No projects added yet. Check back soon!</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <footer class="portfolio-footer glass-morphism">
+        <p>&copy; 2026 Ismel Gabriel. All rights reserved.</p>
+    </footer>
+</div>
+{% endblock %}

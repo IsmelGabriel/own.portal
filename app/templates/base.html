@@ -6,12 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZIO Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% if request.path == '/' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/portfolio.css') }}">
+    {% endif %}
     <link rel="icon" href="{{ url_for('static', filename='img/icon.png') }}" type="image/x-icon">
 </head>
 
 <body>
-    {% if request.path != '/login' %}
+    {% if request.path not in ['/login', '/'] %}
     <nav class="navbar glass-panel">
         <a href="{{ url_for('frontend.dashboard') }}" class="navbar-brand"><img
                 src="{{ url_for('static', filename='img/logo.svg') }}"><p>ZIO Portal</p></a>
@@ -23,7 +28,7 @@
     </nav>
     {% endif %}
 
-    <main class="container">
+    <main class="{% if request.path != '/' %}container{% endif %}">
         {% block content %}{% endblock %}
     </main>
 

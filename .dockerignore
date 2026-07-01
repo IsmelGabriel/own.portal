@@ -1,0 +1,51 @@
+
+
+
+.venv/
+migrations/
+
+# Python cache and distribution
+*.py[cod]
+*$py.class
+__pycache__/
+build/
+dist/
+*.egg-info/
+.eggs/
+wheels/
+*.egg
+
+# Logs
+logs/
+*.log
+
+# Environment variables (Security!)
+.env
+.env.production
+.env.development
+.env.*.local
+
+# Testing data
+test_data/
+*.sqlite
+*.db
+
+# Large files (if not needed in Docker)
+# *.zip
+# *.tar.gz
+# *.rar
+# *.7z
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Docker-related (optional, but good to exclude if you don't need them in the image)
+# docker-compose.yml
+# Dockerfile
+
+# OS files
+.DS_Store
+Thumbs.db
