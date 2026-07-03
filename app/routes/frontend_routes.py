@@ -71,3 +71,11 @@ def create_skill_view():
     user_id = get_jwt_identity()
     user = get_user_by_id(user_id)
     return render_template('create_skill.html', user=user)
+
+@frontend_bp.route('/dashboard/projects/new')
+@jwt_required()
+@require_role('admin')
+def create_project_view():
+    user_id = get_jwt_identity()
+    user = get_user_by_id(user_id)
+    return render_template('create_project.html', user=user)

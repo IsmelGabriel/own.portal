@@ -9,7 +9,10 @@
     </div>
     {% if role == 'admin' %}
     <div style="display: flex; gap: 10px;">
-        <a href="{{ url_for('frontend.create_skill_view') }}" class="btn btn-primary" style="width: auto; background: var(--success-color);">+ Habilidad</a>
+        <a href="{{ url_for('frontend.create_skill_view') }}" class="btn btn-primary"
+            style="width: auto; background: var(--success-color);">+ Habilidad</a>
+        <a href="{{ url_for('frontend.create_project_view') }}" class="btn btn-primary"
+            style="width: auto; background: var(--success-color);">+ Proyecto</a>
         <a href="{{ url_for('frontend.list_users_view') }}" class="btn btn-primary" style="width: auto;">Usuarios</a>
     </div>
     {% endif %}

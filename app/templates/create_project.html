@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-header">
+    <div>
+        <h1 style="margin:0;">Añadir Proyecto</h1>
+        <p style="color: var(--text-muted); margin-top: 5px;">Agrega un nuevo proyecto a tu portafolio</p>
+    </div>
+    <a href="{{ url_for('frontend.dashboard') }}" class="btn btn-outline" style="width: auto; border: 1px solid var(--border-color); color: var(--text-color);">Volver al Panel</a>
+</div>
+
+<div class="center-container" style="min-height: auto;">
+    <div class="auth-form glass-panel" style="max-width: 500px;">
+
+        <form id="projectForm">
+            <div class="input-group">
+                <label for="title">Nombre del Proyecto (Ej: Own Portal)</label>
+                <input type="text" id="title" name="title" required placeholder="Own Portal">
+            </div>
+
+            <div class="input-group">
+                <label for="description">Descripción</label>
+                <textarea id="description" name="description" rows="4" style="width: 100%; padding: 0.75rem 1rem; background: var(--surface-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-size: 0.95rem; font-family: inherit; resize: vertical;" placeholder="My portfolio is a website that showcases my skills and projects."></textarea>
+            </div>
+
+            <div class="input-group">
+                <label for="repo_url">URL del Repositorio</label>
+                <input type="text" id="repo_url" name="repo_url" placeholder="https://github.com/IsmelGabriel/">
+            </div>
+
+            <div class="input-group">
+                <label for="image_url">URL de la Imagen</label>
+                <input type="text" id="image_url" name="image_url" placeholder="https://img_url.com/">
+            </div>
+
+            <div class="input-group">
+                <label for="live_url">URL en host</label>
+                <input type="text" id="live_url" name="live_url" placeholder="https://live_url.com/">
+            </div>
+
+            <div class="input-group">
+                <label for="technologies">Tecnologías (Separadas por coma, Ej: Python, Flask, PostgreSQL)</label>
+                <input type="text" id="technologies" name="technologies" placeholder="Python, Flask, PostgreSQL">
+            </div>
+            <button type="submit" class="btn btn-primary">Guardar Proyecto</button>
+        </form>
+        <div id="error-container"></div>
+        <div id="success-container"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('projectForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const form = e.target;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.textContent;
+        const errorContainer = document.getElementById('error-container');
+        const successContainer = document.getElementById('success-container');
+
+        errorContainer.innerHTML = '';
+        successContainer.innerHTML = '';
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Guardando...';
+
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+            const response = await fetch('/api/projects', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                successContainer.innerHTML = '<div class="alert" style="background: #d1fae5; border-color: #34d399; color: #065f46;">Proyecto guardado correctamente</div>';
+                form.reset();
+            } else {
+                const error = await response.json();
+                showError(error.msg || 'Error al guardar el proyecto');
+            }
+        } catch (err) {
+            showError('Error de conexión con el servidor.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+        }
+    });
+</script>
+{% endblock %}
