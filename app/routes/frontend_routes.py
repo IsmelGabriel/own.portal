@@ -17,7 +17,6 @@ def index():
         skills = get_all_skills()
         return render_template('portfolio.html', projects=projects, skills=skills)
     except Exception as e:
-        logger.error(f"Error during index: {str(e)}", exc_info=True)
         return render_template('portfolio.html', projects=[], skills=[])
 
 @frontend_bp.route('/login')
