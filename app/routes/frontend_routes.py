@@ -2,6 +2,8 @@ from flask import Blueprint, render_template, redirect, url_for, make_response, 
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt, unset_jwt_cookies
 from app.services.user_service import get_user_by_id, get_all_users
 from app.services.role_service import get_all_roles
+from app.services.project_service import get_all_projects
+from app.services.skill_service import get_all_skills
 from app.utils.decorators import require_role
 from app.models.project import Project
 from app.models.skill import Skill
@@ -10,9 +12,13 @@ frontend_bp = Blueprint('frontend', __name__)
 
 @frontend_bp.route('/')
 def index():
-    projects = Project.query.order_by(Project.created_at.desc()).all()
-    skills = Skill.query.order_by(Skill.description.asc()).all()
-    return render_template('portfolio.html', projects=projects, skills=skills)
+    try:
+        projects = get_all_projects()
+        skills = get_all_skills()
+        return render_template('portfolio.html', projects=projects, skills=skills)
+    except Exception as e:
+        logger.error(f"Error during index: {str(e)}", exc_info=True)
+        return render_template('portfolio.html', projects=[], skills=[])
 
 @frontend_bp.route('/login')
 def login():
