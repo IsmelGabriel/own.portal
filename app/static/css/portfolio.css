@@ -1,5 +1,9 @@
 /* Portfolio Theme: Light Pink */
 
+html {
+    scroll-behavior: smooth;
+}
+
 .light-theme {
     --bg-color: #fff5f8;
     --surface-color: rgba(255, 255, 255, 0.85);
@@ -75,6 +79,11 @@
     justify-content: center;
 }
 
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 .hero-content {
     display: flex;
     flex-wrap: wrap;
@@ -84,6 +93,7 @@
     border-radius: 24px;
     width: 100%;
     max-width: 1100px;
+    animation: fadeIn 1s ease-out forwards;
 }
 
 .hero-text {
@@ -163,6 +173,14 @@
     justify-content: center;
 }
 
+.mobile-image {
+    display: none;
+}
+
+.desktop-image {
+    display: flex;
+}
+
 .image-placeholder {
     width: 250px;
     height: 250px;
@@ -202,11 +220,12 @@
     align-items: center;
     padding: 1.5rem;
     border-radius: 16px;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .skill-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(236, 72, 153, 0.15);
 }
 
 .skill-icon {
@@ -249,13 +268,14 @@
 .project-card {
     border-radius: 20px;
     overflow: hidden;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
 }
 
 .project-card:hover {
     transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(236, 72, 153, 0.15);
 }
 
 .project-image {
@@ -331,4 +351,112 @@
     padding: 2rem;
     margin-top: 4rem;
     color: var(--text-muted);
+}
+
+/* Botón de Menú Móvil (Oculto en escritorio) */
+.mobile-menu-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.mobile-menu-btn:hover {
+    color: var(--primary-color);
+}
+
+/* =========================================
+   Media Queries para Dispositivos Móviles
+   ========================================= */
+@media (max-width: 768px) {
+    /* Ajustes de la Barra de Navegación */
+    .portfolio-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 1rem 1.5rem;
+    }
+
+    .mobile-menu-btn {
+        display: block;
+    }
+
+    .nav-links {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 1rem;
+        gap: 1.5rem;
+        padding-bottom: 1rem;
+    }
+
+    .nav-links.show-menu {
+        display: flex;
+    }
+
+    /* Ajustes de la Sección Principal (Hero) */
+    .hero-section {
+        padding: 2rem 5% 2rem;
+    }
+
+    .hero-content {
+        padding: 2rem 1.5rem;
+        text-align: center;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .mobile-image {
+        display: flex;
+        margin: 1.5rem 0;
+    }
+
+    .desktop-image {
+        display: none;
+    }
+
+    .hero-text {
+        flex: 1 1 auto;
+    }
+
+    .hero-actions {
+        justify-content: center;
+    }
+
+    .name {
+        font-size: 2.8rem;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .bio {
+        margin: 1.5rem auto 2rem;
+        font-size: 1rem;
+    }
+
+    .image-placeholder {
+        width: 180px;
+        height: 180px;
+        font-size: 3rem;
+    }
+
+    /* Ajustes de espaciado en secciones generales */
+    .skills-section, .projects-section {
+        padding: 3rem 5%;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Forzar a una sola columna en pantallas muy pequeñas para mejor lectura */
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
 }

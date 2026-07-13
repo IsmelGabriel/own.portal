@@ -3,11 +3,14 @@
 {% block content %}
 <div class="portfolio-container light-theme">
     <nav class="portfolio-nav glass-morphism">
-        <div class="nav-brand">own.portal</div>
-        <div class="nav-links">
-            <a href="#about">About Me</a>
-            <a href="#skills">Skills</a>
-            <a href="#projects">Projects</a>
+        <div class="nav-brand">Ismel Gabriel</div>
+        <button class="mobile-menu-btn" aria-label="Abrir menú" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="nav-links" id="navLinks">
+            <a href="#about" onclick="toggleMenu()">About Me</a>
+            <a href="#skills" onclick="toggleMenu()">Skills</a>
+            <a href="#projects" onclick="toggleMenu()">Projects</a>
             <a href="{{ url_for('frontend.login') }}" class="admin-link">Admin</a>
         </div>
     </nav>
@@ -17,6 +20,14 @@
             <div class="hero-text">
                 <p class="greeting">Hello, I'm</p>
                 <h1 class="name">Ismel</h1>
+
+                <!-- Imagen en telefono -->
+                <div class="hero-image mobile-image">
+                    <div class="image-placeholder glass-morphism">
+                        <span>IG</span>
+                    </div>
+                </div>
+
                 <h2 class="title">Software Developer</h2>
                 <p class="bio">
                     Welcome to my personal portal. I build robust and scalable web applications,
@@ -27,7 +38,9 @@
                     <a href="https://github.com/IsmelGabriel" target="_blank" class="btn btn-outline">GitHub</a>
                 </div>
             </div>
-            <div class="hero-image">
+
+            <!-- Imagen en computadora -->
+            <div class="hero-image desktop-image">
                 <div class="image-placeholder glass-morphism">
                     <span>IG</span>
                 </div>
@@ -122,4 +135,14 @@
         <p>&copy; 2026 Ismel Gabriel. All rights reserved.</p>
     </footer>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function toggleMenu() {
+        if (window.innerWidth <= 768) {
+            document.getElementById('navLinks').classList.toggle('show-menu');
+        }
+    }
+</script>
 {% endblock %}
