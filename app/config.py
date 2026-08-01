@@ -3,6 +3,13 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+db_user = os.getenv('db_user', '')
+db_password = os.getenv('db_password', '')
+db_host = os.getenv('db_host', '')
+db_port = os.getenv('db_port', '5432')
+db_name = os.getenv('db_name', '')
+constructed_db_url = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+
 class Config:
     """Base config."""
     SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'default-secret')
@@ -13,13 +20,10 @@ class Config:
 
 class DevelopmentConfig(Config):
     """Development configuration."""
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+    SQLALCHEMY_DATABASE_URI = constructed_db_url
     DEBUG = True
 
 class ProductionConfig(Config):
     """Production configuration."""
-    db_url = os.getenv('DATABASE_URL', '')
-    if db_url.startswith('postgres://'):
-        db_url = db_url.replace('postgres://', 'postgresql://', 1)
-    SQLALCHEMY_DATABASE_URI = db_url
+    SQLALCHEMY_DATABASE_URI = constructed_db_url
     DEBUG = False
