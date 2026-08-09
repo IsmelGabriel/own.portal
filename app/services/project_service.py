@@ -29,3 +29,23 @@ def create_project(
 
 def get_all_projects():
     return Project.query.order_by(Project.created_at.desc()).all()
+
+def get_project_by_id(project_id):
+    return Project.query.get(project_id)
+
+def update_project(project_id, **kwargs):
+    project = get_project_by_id(project_id)
+    if not project:
+        raise ValueError("Project not found")
+    for key, value in kwargs.items():
+        if hasattr(project, key):
+            setattr(project, key, value)
+    db.session.commit()
+    return project
+
+def delete_project(project_id):
+    project = get_project_by_id(project_id)
+    if not project:
+        raise ValueError("Project not found")
+    db.session.delete(project)
+    db.session.commit()

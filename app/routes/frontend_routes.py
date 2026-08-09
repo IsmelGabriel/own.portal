@@ -29,7 +29,9 @@ def dashboard():
     user_id = get_jwt_identity()
     user = get_user_by_id(user_id)
     claims = get_jwt()
-    return render_template('dashboard.html', user=user, role=claims.get('role'))
+    projects = get_all_projects()
+    skills = get_all_skills()
+    return render_template('dashboard.html', user=user, role=claims.get('role'), projects=projects, skills=skills)
 
 @frontend_bp.route('/logout')
 def logout():

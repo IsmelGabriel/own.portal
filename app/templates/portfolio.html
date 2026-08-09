@@ -68,27 +68,7 @@
                 </div>
                 {% endfor %}
             {% else %}
-                <div class="skill-card glass-morphism">
-                    <div class="skill-info">
-                        <i class="fab fa-python"></i>
-                        <h3>Python</h3>
-                        <p class="skill-desc">Built RESTful APIs, web scraping scripts, and data processing pipelines.</p>
-                    </div>
-                </div>
-                <div class="skill-card glass-morphism">
-                    <div class="skill-info">
-                        <i class="fab fa-docker"></i>
-                        <h3>Docker</h3>
-                        <p class="skill-desc">Containerized applications, managed microservices, and wrote Dockerfiles.</p>
-                    </div>
-                </div>
-                <div class="skill-card glass-morphism">
-                    <div class="skill-info">
-                        <i class="fas fa-database"></i>
-                        <h3>PostgreSQL</h3>
-                        <p class="skill-desc">Designed complex schemas, optimized queries, and managed database migrations.</p>
-                    </div>
-                </div>
+                <div class="no-skills">No skills added yet. Check back soon!</div>
             {% endif %}
         </div>
     </section>
@@ -98,15 +78,24 @@
         <div class="projects-grid">
             {% if projects %}
                 {% for project in projects %}
-                <div class="project-card glass-morphism">
+                <div class="project-card glass-morphism"
+                     data-title="{{ project.title }}"
+                     data-desc="{{ project.description }}"
+                     data-img="{{ project.image_url or '' }}"
+                     data-tech="{{ project.technologies or '' }}"
+                     data-repo="{{ project.repo_url or '' }}"
+                     data-live="{{ project.live_url or '' }}"
+                     onclick="openProjectModal(this)">
+
                     {% if project.image_url %}
                     <div class="project-image" style="background-image: url('{{ project.image_url }}');"></div>
                     {% else %}
                     <div class="project-image placeholder-img"></div>
                     {% endif %}
+
                     <div class="project-content">
                         <h3>{{ project.title }}</h3>
-                        <p>{{ project.description }}</p>
+                        <p>{{ project.description | truncate(80) }}</p>
                         <div class="project-tech">
                             {% if project.technologies %}
                                 {% for tech in project.technologies.split(',') %}
@@ -116,14 +105,15 @@
                         </div>
                         <div class="project-links">
                             {% if project.repo_url %}
-                            <a href="{{ project.repo_url }}" target="_blank" class="project-link">Code</a>
+                            <a href="{{ project.repo_url }}" target="_blank" class="project-link" onclick="event.stopPropagation()">Code</a>
                             {% endif %}
                             {% if project.live_url %}
-                            <a href="{{ project.live_url }}" target="_blank" class="project-link primary">Live</a>
+                            <a href="{{ project.live_url }}" target="_blank" class="project-link primary" onclick="event.stopPropagation()">Live</a>
                             {% endif %}
                         </div>
                     </div>
                 </div>
+
                 {% endfor %}
             {% else %}
                 <p class="no-projects">No projects added yet. Check back soon!</p>
@@ -134,6 +124,32 @@
     <footer class="portfolio-footer glass-morphism">
         <p>&copy; 2026 Ismel Gabriel. All rights reserved.</p>
     </footer>
+
+    <!-- Floating Contact Buttons -->
+    <div class="floating-contact">
+        <a href="https://wa.me/573208572565?text=Hola%2C%20estoy%20interesado%20en%20tus%20servicios" target="_blank" class="contact-btn whatsapp" title="Contactar por WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+        <a href="mailto:ssismel28@gmail.com?subject=Hola%2C%20estoy%20interesado%20en%20tus%20servicios" class="contact-btn email" title="Contactar por Email">
+            <i class="fas fa-envelope"></i>
+        </a>
+    </div>
+
+    <!-- Project Modal -->
+    <div id="projectModal" class="modal-overlay">
+        <div class="modal-content glass-morphism">
+            <span class="close-modal" onclick="closeProjectModal()">&times;</span>
+            <div class="modal-body">
+                <img id="modalImage" src="" alt="Project Image" class="modal-img">
+                <h2 id="modalTitle">Project Title</h2>
+                <p id="modalDescription" class="modal-desc">Description</p>
+                <div id="modalTech" class="project-tech"></div>
+                <div id="modalLinks" class="project-links mt-3"></div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 {% endblock %}
 
@@ -144,5 +160,70 @@
             document.getElementById('navLinks').classList.toggle('show-menu');
         }
     }
+
+    function openProjectModal(card) {
+        const title = card.getAttribute('data-title');
+        const desc = card.getAttribute('data-desc');
+        const img = card.getAttribute('data-img');
+        const tech = card.getAttribute('data-tech');
+        const repo = card.getAttribute('data-repo');
+        const live = card.getAttribute('data-live');
+
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalDescription').textContent = desc;
+
+        const imgEl = document.getElementById('modalImage');
+        if (img) {
+            imgEl.src = img;
+            imgEl.style.display = 'block';
+        } else {
+            imgEl.style.display = 'none';
+        }
+
+        const techContainer = document.getElementById('modalTech');
+        techContainer.innerHTML = '';
+        if (tech) {
+            tech.split(',').forEach(t => {
+                const span = document.createElement('span');
+                span.className = 'tech-tag';
+                span.textContent = t.trim();
+                techContainer.appendChild(span);
+            });
+        }
+
+        const linksContainer = document.getElementById('modalLinks');
+        linksContainer.innerHTML = '';
+        if (repo) {
+            const a = document.createElement('a');
+            a.href = repo;
+            a.target = '_blank';
+            a.className = 'project-link';
+            a.textContent = 'Code';
+            linksContainer.appendChild(a);
+        }
+        if (live) {
+            const a = document.createElement('a');
+            a.href = live;
+            a.target = '_blank';
+            a.className = 'project-link primary';
+            a.textContent = 'Live';
+            linksContainer.appendChild(a);
+        }
+
+        document.getElementById('projectModal').classList.add('show-modal');
+    }
+
+    function closeProjectModal() {
+        document.getElementById('projectModal').classList.remove('show-modal');
+    }
+
+    // Cerrar modal al hacer clic fuera del contenido
+    window.onclick = function(event) {
+        const modal = document.getElementById('projectModal');
+        if (event.target == modal) {
+            closeProjectModal();
+        }
+    }
+
 </script>
 {% endblock %}

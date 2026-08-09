@@ -19,3 +19,23 @@ def create_skill(name, icon_class=None, description=None):
 
 def get_all_skills():
     return Skill.query.order_by(Skill.created_at.desc()).all()
+
+def get_skill_by_id(skill_id):
+    return Skill.query.get(skill_id)
+
+def update_skill(skill_id, **kwargs):
+    skill = get_skill_by_id(skill_id)
+    if not skill:
+        raise ValueError("Skill not found")
+    for key, value in kwargs.items():
+        if hasattr(skill, key):
+            setattr(skill, key, value)
+    db.session.commit()
+    return skill
+
+def delete_skill(skill_id):
+    skill = get_skill_by_id(skill_id)
+    if not skill:
+        raise ValueError("Skill not found")
+    db.session.delete(skill)
+    db.session.commit()

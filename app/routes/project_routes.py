@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
-from app.services.project_service import create_project
+from app.services.project_service import create_project, update_project, delete_project
 from app.utils.decorators import require_role
 from app.schemas.project_schema import ProjectSchema
 from marshmallow import ValidationError
@@ -42,4 +42,27 @@ def add_project():
         }), 201
     except Exception as e:
         logger.error(f"Error during project creation: {str(e)}", exc_info=True)
+        return jsonify({"msg": str(e)}), 400
+
+@project_bp.route('/<int:project_id>', methods=['PUT'])
+@jwt_required()
+@require_role('admin')
+def edit_project(project_id):
+    data = request.get_json()
+    try:
+        updated = update_project(project_id, **data)
+        return jsonify({"msg": "Project updated successfully"}), 200
+    except Exception as e:
+        logger.error(f"Error updating project: {str(e)}", exc_info=True)
+        return jsonify({"msg": str(e)}), 400
+
+@project_bp.route('/<int:project_id>', methods=['DELETE'])
+@jwt_required()
+@require_role('admin')
+def remove_project(project_id):
+    try:
+        delete_project(project_id)
+        return jsonify({"msg": "Project deleted successfully"}), 200
+    except Exception as e:
+        logger.error(f"Error deleting project: {str(e)}", exc_info=True)
         return jsonify({"msg": str(e)}), 400

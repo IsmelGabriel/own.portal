@@ -31,6 +31,64 @@
         <h3>Panel de Administración</h3>
         <p>Como administrador tienes acceso exclusivo para crear y gestionar otros usuarios del portal.</p>
     </div>
+
+    <!-- Gestión de Habilidades (Paso 3.2) -->
+    <div class="card panel" style="grid-column: 1 / -1; margin-top: 20px;">
+        <h3 style="margin-bottom: 1rem;">Gestión de Habilidades</h3>
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; text-align: left; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--border-color, #444);">
+                        <th style="padding: 10px;">Nombre</th>
+                        <th style="padding: 10px;">Descripción</th>
+                        <th style="padding: 10px; width: 100px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for skill in skills %}
+                    <tr style="border-bottom: 1px solid var(--border-color, #444);">
+                        <td style="padding: 10px;">{{ skill.name }}</td>
+                        <td style="padding: 10px;">{{ skill.description | default('Sin descripción', true) | truncate(50) }}</td>
+                        <td style="padding: 10px;">
+                            <button onclick="deleteItem('skills', {{ skill.id }})" class="btn btn-outline" style="color: var(--error-color, #ff4c4c); border-color: var(--error-color, #ff4c4c); padding: 5px 10px; font-size: 0.85rem;">Eliminar</button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="3" style="padding: 10px; text-align: center;">No hay habilidades registradas.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Gestión de Proyectos (Paso 3.2) -->
+    <div class="card panel" style="grid-column: 1 / -1; margin-top: 20px;">
+        <h3 style="margin-bottom: 1rem;">Gestión de Proyectos</h3>
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; text-align: left; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--border-color, #444);">
+                        <th style="padding: 10px;">Título</th>
+                        <th style="padding: 10px;">Tecnologías</th>
+                        <th style="padding: 10px; width: 100px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects %}
+                    <tr style="border-bottom: 1px solid var(--border-color, #444);">
+                        <td style="padding: 10px;">{{ project.title }}</td>
+                        <td style="padding: 10px;">{{ project.technologies | truncate(50) }}</td>
+                        <td style="padding: 10px;">
+                            <button onclick="deleteItem('projects', {{ project.id }})" class="btn btn-outline" style="color: var(--error-color, #ff4c4c); border-color: var(--error-color, #ff4c4c); padding: 5px 10px; font-size: 0.85rem;">Eliminar</button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="3" style="padding: 10px; text-align: center;">No hay proyectos registrados.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
     {% endif %}
 
     <div class="card panel">
@@ -87,5 +145,31 @@
             statusEl.style.color = 'var(--error-color)';
         }
     });
+
+    async function deleteItem(type, id) {
+        // type puede ser 'projects' o 'skills'
+        const itemName = type === 'projects' ? 'proyecto' : 'habilidad';
+        if (!confirm(`¿Estás seguro de que deseas eliminar este ${itemName}?`)) return;
+
+        try {
+            const response = await fetch(`/api/${type}/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                alert(`${itemName.charAt(0).toUpperCase() + itemName.slice(1)} eliminado con éxito`);
+                location.reload(); // Recarga la página para ver los cambios
+            } else {
+                const data = await response.json();
+                alert(`Error al eliminar el ${itemName}: ` + (data.msg || 'Desconocido'));
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert(`Ocurrió un error al intentar eliminar el ${itemName}.`);
+        }
+    }
 </script>
 {% endblock %}
