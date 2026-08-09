@@ -3,8 +3,8 @@
 {% block content %}
 <div class="dashboard-header">
     <div>
-        <h1 style="margin:0;">Añadir Proyecto</h1>
-        <p style="color: var(--text-muted); margin-top: 5px;">Agrega un nuevo proyecto a tu portafolio</p>
+        <h1 style="margin:0;">{% if edit_mode %}Editar{% else %}Añadir{% endif %} Proyecto</h1>
+        <p style="color: var(--text-muted); margin-top: 5px;">{% if edit_mode %}Actualiza la información del{% else %}Agrega un nuevo{% endif %} proyecto a tu portafolio</p>
     </div>
     <a href="{{ url_for('frontend.dashboard') }}" class="btn btn-outline" style="width: auto; border: 1px solid var(--border-color); color: var(--text-color);">Volver al Panel</a>
 </div>
@@ -15,34 +15,34 @@
         <form id="projectForm">
             <div class="input-group">
                 <label for="title">Nombre del Proyecto (Ej: Own Portal)</label>
-                <input type="text" id="title" name="title" required placeholder="Own Portal">
+                <input type="text" id="title" name="title" required placeholder="Own Portal" value="{{ project.title if edit_mode else '' }}">
             </div>
 
             <div class="input-group">
                 <label for="description">Descripción</label>
-                <textarea id="description" name="description" rows="4" style="width: 100%; padding: 0.75rem 1rem; background: var(--surface-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-size: 0.95rem; font-family: inherit; resize: vertical;" placeholder="My portfolio is a website that showcases my skills and projects."></textarea>
+                <textarea id="description" name="description" rows="4" style="width: 100%; padding: 0.75rem 1rem; background: var(--surface-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-size: 0.95rem; font-family: inherit; resize: vertical;" placeholder="My portfolio is a website that showcases my skills and projects.">{{ project.description if edit_mode and project.description else '' }}</textarea>
             </div>
 
             <div class="input-group">
                 <label for="repo_url">URL del Repositorio</label>
-                <input type="text" id="repo_url" name="repo_url" placeholder="https://github.com/IsmelGabriel/">
+                <input type="text" id="repo_url" name="repo_url" placeholder="https://github.com/IsmelGabriel/" value="{{ project.repo_url if edit_mode and project.repo_url else '' }}">
             </div>
 
             <div class="input-group">
                 <label for="image_url">URL de la Imagen</label>
-                <input type="text" id="image_url" name="image_url" placeholder="https://img_url.com/">
+                <input type="text" id="image_url" name="image_url" placeholder="https://img_url.com/" value="{{ project.image_url if edit_mode and project.image_url else '' }}">
             </div>
 
             <div class="input-group">
                 <label for="live_url">URL en host</label>
-                <input type="text" id="live_url" name="live_url" placeholder="https://live_url.com/">
+                <input type="text" id="live_url" name="live_url" placeholder="https://live_url.com/" value="{{ project.live_url if edit_mode and project.live_url else '' }}">
             </div>
 
             <div class="input-group">
                 <label for="technologies">Tecnologías (Separadas por coma, Ej: Python, Flask, PostgreSQL)</label>
-                <input type="text" id="technologies" name="technologies" placeholder="Python, Flask, PostgreSQL">
+                <input type="text" id="technologies" name="technologies" placeholder="Python, Flask, PostgreSQL" value="{{ project.technologies if edit_mode and project.technologies else '' }}">
             </div>
-            <button type="submit" class="btn btn-primary">Guardar Proyecto</button>
+            <button type="submit" class="btn btn-primary">{% if edit_mode %}Actualizar{% else %}Guardar{% endif %} Proyecto</button>
         </form>
         <div id="error-container"></div>
         <div id="success-container"></div>
@@ -69,9 +69,14 @@
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
 
+        const editMode = {{ 'true' if edit_mode else 'false' }};
+        const projectId = {{ project.id if edit_mode else 'null' }};
+        const method = editMode ? 'PUT' : 'POST';
+        const url = editMode ? `/api/projects/${projectId}` : '/api/projects';
+
         try {
-            const response = await fetch('/api/projects', {
-                method: 'POST',
+            const response = await fetch(url, {
+                method: method,
                 headers: {
                     'Content-Type': 'application/json'
                 },

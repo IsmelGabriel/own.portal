@@ -2,8 +2,8 @@ from flask import Blueprint, render_template, redirect, url_for, make_response, 
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt, unset_jwt_cookies
 from app.services.user_service import get_user_by_id, get_all_users
 from app.services.role_service import get_all_roles
-from app.services.project_service import get_all_projects
-from app.services.skill_service import get_all_skills
+from app.services.project_service import get_all_projects, get_project_by_id
+from app.services.skill_service import get_all_skills, get_skill_by_id
 from app.utils.decorators import require_role
 from app.models.project import Project
 from app.models.skill import Skill
@@ -86,3 +86,21 @@ def create_project_view():
     user_id = get_jwt_identity()
     user = get_user_by_id(user_id)
     return render_template('create_project.html', user=user)
+
+@frontend_bp.route('/dashboard/skills/edit/<int:skill_id>')
+@jwt_required()
+@require_role('admin')
+def edit_skill_view(skill_id):
+    user_id = get_jwt_identity()
+    user = get_user_by_id(user_id)
+    skill = get_skill_by_id(skill_id)
+    return render_template('create_skill.html', user=user, skill=skill, edit_mode=True)
+
+@frontend_bp.route('/dashboard/projects/edit/<int:project_id>')
+@jwt_required()
+@require_role('admin')
+def edit_project_view(project_id):
+    user_id = get_jwt_identity()
+    user = get_user_by_id(user_id)
+    project = get_project_by_id(project_id)
+    return render_template('create_project.html', user=user, project=project, edit_mode=True)

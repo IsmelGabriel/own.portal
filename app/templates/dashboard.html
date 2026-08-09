@@ -50,6 +50,7 @@
                         <td style="padding: 10px;">{{ skill.name }}</td>
                         <td style="padding: 10px;">{{ skill.description | default('Sin descripción', true) | truncate(50) }}</td>
                         <td style="padding: 10px;">
+                            <a href="{{ url_for('frontend.edit_skill_view', skill_id=skill.id) }}" class="btn btn-outline" style="color: var(--primary-color); border-color: var(--primary-color); padding: 5px 10px; font-size: 0.85rem; text-decoration: none; margin-right: 5px;">Editar</a>
                             <button onclick="deleteItem('skills', {{ skill.id }})" class="btn btn-outline" style="color: var(--error-color, #ff4c4c); border-color: var(--error-color, #ff4c4c); padding: 5px 10px; font-size: 0.85rem;">Eliminar</button>
                         </td>
                     </tr>
@@ -79,6 +80,7 @@
                         <td style="padding: 10px;">{{ project.title }}</td>
                         <td style="padding: 10px;">{{ project.technologies | truncate(50) }}</td>
                         <td style="padding: 10px;">
+                            <a href="{{ url_for('frontend.edit_project_view', project_id=project.id) }}" class="btn btn-outline" style="color: var(--primary-color); border-color: var(--primary-color); padding: 5px 10px; font-size: 0.85rem; text-decoration: none; margin-right: 5px;">Editar</a>
                             <button onclick="deleteItem('projects', {{ project.id }})" class="btn btn-outline" style="color: var(--error-color, #ff4c4c); border-color: var(--error-color, #ff4c4c); padding: 5px 10px; font-size: 0.85rem;">Eliminar</button>
                         </td>
                     </tr>

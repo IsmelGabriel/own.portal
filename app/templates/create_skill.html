@@ -3,7 +3,7 @@
 {% block content %}
 <div class="dashboard-header">
     <div>
-        <h1 style="margin:0;">Añadir Habilidad</h1>
+        <h1 style="margin:0;">{% if edit_mode %}Editar{% else %}Añadir{% endif %} Habilidad</h1>
         <p style="color: var(--text-muted); margin-top: 5px;">Agrega una nueva habilidad a tu portafolio</p>
     </div>
     <a href="{{ url_for('frontend.dashboard') }}" class="btn btn-outline" style="width: auto; border: 1px solid var(--border-color); color: var(--text-color);">Volver al Panel</a>
@@ -15,21 +15,21 @@
         <form id="skillForm">
             <div class="input-group">
                 <label for="name">Nombre de la Habilidad (Ej: Python)</label>
-                <input type="text" id="name" name="name" required placeholder="Python">
+                <input type="text" id="name" name="name" required placeholder="Python" value="{{ skill.name if edit_mode else '' }}">
             </div>
 
             <div class="input-group">
                 <label for="icon_class">Clase del Ícono (Opcional, Ej: fa-brands fa-python)</label>
-                <input type="text" id="icon_class" name="icon_class" placeholder="fa-brands fa-python">
+                <input type="text" id="icon_class" name="icon_class" placeholder="fa-brands fa-python" value="{{ skill.icon_class if edit_mode and skill.icon_class else '' }}">
                 <label style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;"><a href="https://fontawesome.com/search" target="_blank">Ver todos los íconos</a></label>
             </div>
 
             <div class="input-group">
                 <label for="description">Descripción</label>
-                <textarea id="description" name="description" rows="4" style="width: 100%; padding: 0.75rem 1rem; background: var(--surface-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-size: 0.95rem; font-family: inherit; resize: vertical;" placeholder="Construcción de APIs RESTful..."></textarea>
+                <textarea id="description" name="description" rows="4" style="width: 100%; padding: 0.75rem 1rem; background: var(--surface-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-size: 0.95rem; font-family: inherit; resize: vertical;" placeholder="Construcción de APIs RESTful...">{{ skill.description if edit_mode and skill.description else '' }}</textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary">Guardar Habilidad</button>
+            <button type="submit" class="btn btn-primary">{% if edit_mode %}Actualizar{% else %}Guardar{% endif %} Habilidad</button>
         </form>
 
         <div id="error-container"></div>
@@ -57,9 +57,14 @@
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
 
+        const editMode = {{ 'true' if edit_mode else 'false' }};
+        const skillId = {{ skill.id if edit_mode else 'null' }};
+        const method = editMode ? 'PUT' : 'POST';
+        const url = editMode ? `/api/skills/${skillId}` : '/api/skills';
+
         try {
-            const response = await fetch('/api/skills', {
-                method: 'POST',
+            const response = await fetch(url, {
+                method: method,
                 headers: {
                     'Content-Type': 'application/json'
                 },
